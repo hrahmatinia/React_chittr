@@ -1,36 +1,20 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native'
-
-
-const styles = StyleSheet.create({
-    helloText: {
-        color: 'red',
-        fontSize: 50
-    }
-});
-
-class SayHello extends Component {
-    render() {
-        return (
-            <View>
-                <Text style={styles.helloText}>Hello {this.props.name}</Text>
-            </View>
-        )
-    };
-}
-
-class HelloWorldApp extends Component {
-    render() {
-        
-        return (
-            <View>
-                <SayHello name="Ted" />
-                <SayHello name="Ted1" />
-                <SayHello name="Ted2" />
-                <SayHello name="Ted3" />
-            </View>
-        );
-
-    }
-}
-export default HelloWorldApp
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+import HomeScreen from './screens/HomeScreen';
+import AboutScreen from './screens/AboutScreen';
+import SignUp from './screens/SignUp';
+import Login from './screens/Login';
+const AppStackNav = createStackNavigator({
+    Home: {
+        screen: HomeScreen
+    },
+    About: {
+        screen: AboutScreen
+    },
+    SignUp: {
+        screen: SignUp
+    },
+    Login: {
+        screen: Login
+    }
+});const AppContainer = createAppContainer(AppStackNav);export default AppContainer;
