@@ -1,25 +1,63 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Link, Redirect } from 'react-router-dom';
+import Route from 'react-router-dom/Route';
 import {
     Text,
     View,
     TextInput,
     TouchableOpacity,
-    StyleSheet
+    StyleSheet,
+    Button
 } from 'react-native';
 class Login extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            email: '',
+            password: ''
+        };
+    }
+
+    Login = () => {
+        console.log(this.state.id);
+        return fetch("http://10.0.2.2:3333/api/v0.0.5/login",
+            {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+
+                },
+                body: JSON.stringify({
+                    email: this.state.email,
+                    password: this.state.password
+                })
+            })
+            .then((Response) => Response.json())
+            .then((result) => {
+                console.log(result);
+                if (result.Status == 'Invalid')
+                    alert('Invalid User');
+                else
+                   // (<Redirect to='./screens/AboutScreen'/>);
+                 // this.props.router.push('./screens/AboutScreen');
+                { () => this.props.navigation.navigate('./screens/AboutScreen') };
+            });
+    }
+
+
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.header}>Register</Text>
+                <Text style={styles.header}>Login</Text>
 
-                <TextInput style={styles.textinput} placeholderTextColor="white" placeholder='EMail'
+                <TextInput name='email' onChangeText={(text) => this.setState({ email: text })} value={this.state.email.value} style={styles.textinput} placeholderTextColor="white" placeholder='EMail'
                     underlineColorAndroid={'transparent'} />
-                <TextInput style={styles.textinput} placeholderTextColor="white" placeholder='Password'
+                <TextInput name='password' onChangeText={(text) => this.setState({ password: text })} value={this.state.password.value} style={styles.textinput} placeholderTextColor="white" placeholder='Password'
                     secureTextEntry={true} underlineColorAndroid={'transparent'} />
 
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttontext}> Login </Text>
-                </TouchableOpacity>
+                <Button title="Login" onPress={this.Login.bind(this)} />
             </View>
         );
     }

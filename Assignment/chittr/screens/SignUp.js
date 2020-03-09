@@ -1,29 +1,65 @@
 import React, { Component } from 'react';
+import { Alert } from 'react-native';
 import {
     Text,
     View,
     TextInput,
     TouchableOpacity,
-    StyleSheet
+    StyleSheet,
+    Button
 } from 'react-native';
+
 class SignUp extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            given_name: '',
+            family_name: '',
+            email: '',
+            password: ''
+        };
+    }
+
+    signUP = () => {
+        console.log(this.state.id);
+        return fetch("http://10.0.2.2:3333/api/v0.0.5/user",
+            {
+                method: 'POST',
+                headers: {                   
+        'Accept': 'application/json',                  
+        'Content-Type': 'application/json'
+
+                },
+                body: JSON.stringify({
+                    given_name: this.state.given_name,
+                    family_name: this.state.family_name,
+                    email: this.state.email,
+                    password: this.state.password
+                })
+            })
+            .then((response) => {
+                Alert.alert("Item Added!" + this.state.given_name + this.state.family_name + this.state.email + this.state.password);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
     render() {
         return (
             <View style={styles.container}>
                 <Text style={styles.header}>Register</Text>
-
-                <TextInput style={styles.textinput} placeholderTextColor="white" placeholder='Yourname'
+               
+                <TextInput name='given_name' onChangeText={(text) => this.setState({ given_name: text })} value={this.state.given_name.value} style={styles.textinput} placeholderTextColor="white" placeholder='Yourname'
                     underlineColorAndroid={'transparent'} />
-                <TextInput style={styles.textinput} placeholderTextColor="white" placeholder='Surename'
+                <TextInput name='family_name' onChangeText={(text) => this.setState({ family_name: text })} value={this.state.family_name.value} style={styles.textinput} placeholderTextColor="white" placeholder='Surename'
                     underlineColorAndroid={'transparent'} />
-                <TextInput style={styles.textinput} placeholderTextColor="white" placeholder='EMail'
+                <TextInput name='email' onChangeText={(text) => this.setState({ email: text })} value={this.state.email.value} style={styles.textinput} placeholderTextColor="white" placeholder='EMail'
                     underlineColorAndroid={'transparent'} />
-                <TextInput style={styles.textinput} placeholderTextColor="white" placeholder='Password'
+                <TextInput name='password' onChangeText={(text) => this.setState({ password: text })} value={this.state.password.value} style={styles.textinput} placeholderTextColor="white" placeholder='Password'
                     secureTextEntry={true} underlineColorAndroid={'transparent'} />
-
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttontext}> SignUP </Text>
-                </TouchableOpacity>
+                <Button title="SignUp" onPress={this.signUP.bind(this)} />
             </View>
         );
     }

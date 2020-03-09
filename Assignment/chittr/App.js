@@ -4,6 +4,8 @@ import HomeScreen from './screens/HomeScreen';
 import AboutScreen from './screens/AboutScreen';
 import SignUp from './screens/SignUp';
 import Login from './screens/Login';
+import Chitts from './screens/Chitts';
+
 const AppStackNav = createStackNavigator({
     Home: {
         screen: HomeScreen
@@ -16,5 +18,15 @@ const AppStackNav = createStackNavigator({
     },
     Login: {
         screen: Login
-    }
-});const AppContainer = createAppContainer(AppStackNav);export default AppContainer;
+    },
+    Chitts: {
+        screen: Chitts
+    }
+
+
+});
+
+
+const AppContainer = createAppContainer(AppStackNav);
+
+export default AppContainer;
