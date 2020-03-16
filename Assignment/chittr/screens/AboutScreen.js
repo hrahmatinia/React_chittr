@@ -5,13 +5,6 @@ class AboutScreen extends Component {
         return (
             <View>
                 <Text>About Screen</Text>
-            </View>,
-            <View>
-               
-                    <Button
-                        title="Chitts"
-                        onPress={() => this.props.navigation.navigate('Login')}
-                    />
             </View>
         );
     }

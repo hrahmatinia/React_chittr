@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { FlatList, Text, View, Button, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-class HomeScreen extends Component {
+class GetAllChits extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -45,12 +45,15 @@ class HomeScreen extends Component {
     //        })
     //    }
     //}
-
-    logOut = async () => {
-        AsyncStorage.clear();
-        this.props.navigation.navigate("Auth");
+    //logout = async () => {
+    //    this.setstate({
+    //        loggedin: 'false'
+    //    })
        
-    }
+    //    await asyncstorage.clear();
+    //    this.props.navigattion.navigate('auth');
+       
+    //}
    
     render() {
 
@@ -62,21 +65,21 @@ class HomeScreen extends Component {
                     data={this.state.AllTheChitts}
                     renderItem={({ item }) => (
                         <View>
-                        <Text>{item.user.given_name}</Text>
+                            <Text>{item.user.given_name}</Text>
                             <Text>{item.chit_content}</Text>
                         </View>
-                        )}
+                    )}
                     keyExtractor={(item, index) => item.chit_id.toString()}
                 />
-                    
-            
                 <Button
-                    title="Logout"
-                    onPress={this.logOut}
+                    title="Login"
+                    onPress={() => this.props.navigation.navigate('Login')}
                 />
 
-              
-              
+                <Button
+                    title="SignUp"
+                    onPress={() => this.props.navigation.navigate('SignUp')}
+                />
              
             </View>
         );
@@ -95,4 +98,4 @@ const styles = StyleSheet.create({
         paddingRight: 60,
     }
 });
-export default HomeScreen;
+export default GetAllChits;

@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Link, Redirect } from 'react-router-dom';
-import Route from 'react-router-dom/Route';
-import { browserHistory } from 'react-router';
+import { Alert } from 'react-native';
 import {
     Text,
     View,
     TextInput,
     TouchableOpacity,
     StyleSheet,
-    Button,
-    AsyncStorage
+    Button
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 class Login extends Component {
 
     constructor(props) {
@@ -18,11 +16,16 @@ class Login extends Component {
         this.state = {
             email: '',
             password: '',
-            XAuthorization:''
+            XAuthorization: '',
+            loggedIn: 'false',
+            id: '',
+            token:''
+           
         };
     }
     // i have to use Async
-    Login = async() => {
+    Login = () => {
+       
         console.log("Email:   " + this.state.email + "    and  pass:  " + this.state.password);
         return fetch("http://10.0.2.2:3333/api/v0.0.5/login",
             {
@@ -30,11 +33,12 @@ class Login extends Component {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
-
+                    
                 },
                 body: JSON.stringify({
                     email: this.state.email,
-                    password: this.state.password
+                    password: this.state.password,
+                   // loggedIn: this.state.loggedIn,
                 })
             })
 
@@ -42,26 +46,43 @@ class Login extends Component {
                
                 console.log(Response.status);
                 if (Response.status == 200) {
-                    
-                    console.log("yayyyy");
-                   this.props.navigation.navigate('Home');
+                    this.setState({
+                        loggedIn: 'true'
+                    })
+                    console.log("successfull Login");
+                    this.props.navigation.navigate('App');
+                }
+                else {
+                    this.setState({
+                        loggedIn: 'false'
+                    })
+                    console.log("Email or password is invalid");
+                    Alert.alert('Unsuccessful Login', 'Email or Password Is Not Valid');
+                   // this.props.navigation.navigate('Auth');
                 }
                 return Response.json()
-            })
+            }) 
             .then((result) => {
-               
-                this.setState({ XAuthorization: result.token });
                 console.log(result);
-
+                if (result.token !== null) {
+                    this.setState({ token: result.token });
+                    this.setState({ id: result.id });
+                    this.saveToken();
+                }
+                else {
+                    Alert.alert('Unsuccessful Login', 'Email or Password Is Not Valid');
+                }
             }).catch((error) => {
-                console.log(error);
-
+                console.log('There has been a problem with your fetch operation: ' +error);
+                throw error;
             });
-        alert("yesssss");
-        if (result.token != null) { await AsyncStorage.setItem('isLoggedIn', '1'); }
-        await AsyncStorage.setItem('token', XAuthorization); 
+       
     }
 
+    saveToken = async () => {
+        await AsyncStorage.setItem('userToken', JSON.stringify(this.state.token));
+        await AsyncStorage.setItem('id', JSON.stringify(this.state.id));
+    }
 
     render() {
         return (
