@@ -40,6 +40,13 @@ class SignUp extends Component {
             })
             .then((response) => {
                 Alert.alert("Item Added!" + this.state.given_name + this.state.family_name + this.state.email + this.state.password);
+                console.log(response.status);
+                if (response.status == 201) {
+                    console.log("Signed up" + "      " + "Item Added!       " + this.state.given_name + "      " + this.state.family_name + "      " + this.state.email + "      " + this.state.password);
+                    this.props.navigation.navigate('Home');
+                }
+                return response.json()
+               
             })
             .catch((error) => {
                 console.error(error);

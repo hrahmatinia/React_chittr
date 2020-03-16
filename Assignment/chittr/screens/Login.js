@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Link, Redirect } from 'react-router-dom';
 import Route from 'react-router-dom/Route';
+import { browserHistory } from 'react-router';
 import {
     Text,
     View,
     TextInput,
     TouchableOpacity,
     StyleSheet,
-    Button
+    Button,
+    AsyncStorage
 } from 'react-native';
 class Login extends Component {
 
@@ -15,12 +17,13 @@ class Login extends Component {
         super(props);
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            XAuthorization:''
         };
     }
-
-    Login = () => {
-        console.log(this.state.id);
+    // i have to use Async
+    Login = async() => {
+        console.log("Email:   " + this.state.email + "    and  pass:  " + this.state.password);
         return fetch("http://10.0.2.2:3333/api/v0.0.5/login",
             {
                 method: 'POST',
@@ -34,16 +37,29 @@ class Login extends Component {
                     password: this.state.password
                 })
             })
-            .then((Response) => Response.json())
+
+            .then((Response) => {
+               
+                console.log(Response.status);
+                if (Response.status == 200) {
+                    
+                    console.log("yayyyy");
+                   this.props.navigation.navigate('Home');
+                }
+                return Response.json()
+            })
             .then((result) => {
+               
+                this.setState({ XAuthorization: result.token });
                 console.log(result);
-                if (result.Status == 'Invalid')
-                    alert('Invalid User');
-                else
-                   // (<Redirect to='./screens/AboutScreen'/>);
-                 // this.props.router.push('./screens/AboutScreen');
-                { () => this.props.navigation.navigate('./screens/AboutScreen') };
+
+            }).catch((error) => {
+                console.log(error);
+
             });
+        alert("yesssss");
+        if (result.token != null) { await AsyncStorage.setItem('isLoggedIn', '1'); }
+        await AsyncStorage.setItem('token', XAuthorization); 
     }
 
 
@@ -57,7 +73,7 @@ class Login extends Component {
                 <TextInput name='password' onChangeText={(text) => this.setState({ password: text })} value={this.state.password.value} style={styles.textinput} placeholderTextColor="white" placeholder='Password'
                     secureTextEntry={true} underlineColorAndroid={'transparent'} />
 
-                <Button title="Login" onPress={this.Login.bind(this)} />
+                <Button title="Login" onPress={this.Login} />
             </View>
         );
     }
