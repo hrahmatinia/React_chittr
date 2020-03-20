@@ -3,7 +3,7 @@ Chittr is a totally original, unique and non-plagiarised platform for microblogg
 for an account can publish ‘Chits’ – short, textual based posts of no more than 141 characters. Users
 can also follow their friends and peers to keep updated with what their friends are Chitting about.
 
-Getting Started
+# Getting Started
 to run this App you should just run the server ,$npm start.
 open the android studio and open the project.
 run the virtual device.
