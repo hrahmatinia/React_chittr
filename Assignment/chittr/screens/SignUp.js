@@ -43,7 +43,7 @@ class SignUp extends Component {
                 console.log(response.status);
                 if (response.status == 201) {
                     console.log("Signed up" + "      " + "Item Added!       " + this.state.given_name + "      " + this.state.family_name + "      " + this.state.email + "      " + this.state.password);
-                    this.props.navigation.navigate('Home');
+                    this.props.navigation.navigate('Auth');
                 }
                 return response.json()
                
@@ -66,7 +66,7 @@ class SignUp extends Component {
                     underlineColorAndroid={'transparent'} />
                 <TextInput name='password' onChangeText={(text) => this.setState({ password: text })} value={this.state.password.value} style={styles.textinput} placeholderTextColor="white" placeholder='Password'
                     secureTextEntry={true} underlineColorAndroid={'transparent'} />
-                <Button title="SignUp" onPress={this.signUP.bind(this)} />
+                <Button title="SignUp" onPress={this.signUP} />
             </View>
         );
     }

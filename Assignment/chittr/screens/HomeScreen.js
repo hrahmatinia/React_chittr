@@ -1,18 +1,52 @@
 import React, { Component } from 'react';
-import { FlatList, Text, View, Button, StyleSheet } from 'react-native';
+import { FlatList, Text, View, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 class HomeScreen extends Component {
     constructor(props) {
         super(props);
+        
         this.state = {
             isLoading: true,
             AllTheChitts: [],
             user_id: '',
-            loggedin:'false'
+            loggedin:'false',
+            UserId:'',
+            token:''
+        }
+        this.getData = this.getData.bind(this);
+        
+    }
+
+    GetUserDetails = async () => {
+        try {
+            const userID = await AsyncStorage.getItem('id', (error, item) => console.log('profileid:' + item));
+            const id = JSON.parse(userID);
+            this.setState({
+                userId: id
+            })
+
+            const usertoken = await AsyncStorage.getItem('userToken', (error, item) => console.log('profiletoken in  home:' + item));
+            const userToken = JSON.parse(usertoken);
+            this.setState({
+                token: userToken
+            })
+            this.getData();
+
+        } catch (error) {
+            console.log(error);
+
         }
     }
+
     getData() {
-        return fetch('http://10.0.2.2:3333/api/v0.0.5/chits')
+        return fetch('http://10.0.2.2:3333/api/v0.0.5/chits?start=0&count=100',
+          {
+                
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-Authorization': this.state.token
+                }
+                })
             .then((response) => response.json())
             .then((responsejson) => {
                 this.setState({
@@ -23,35 +57,17 @@ class HomeScreen extends Component {
             .catch((error) => {
                 console.log(error);
             });
-        cleanup();
+      
     }
 
     componentDidMount() {
+        this.GetUserDetails();
         this.getData();
     }
 
-    //loadtoken = async () => {
-    //    let token = await asyncstorage.getitem('token');
-    //    let loggedin = await asyncstorage.getitem('loggedin');
-    //    console.log('this is the token that we passed here:    ' + token + loggedin);
-    //    if (token != null) {
-    //        this.setstate({
-    //            loggedin: 'true'
-    //        })
-    //    }
-    //    else {
-    //        this.setstate({
-    //            loggedin: 'false'
-    //        })
-    //    }
-    //}
+  
 
-    logOut = async () => {
-        AsyncStorage.clear();
-        this.props.navigation.navigate("Auth");
-       
-    }
-   
+  
     render() {
 
         return (
@@ -60,21 +76,22 @@ class HomeScreen extends Component {
                 
                 <FlatList
                     data={this.state.AllTheChitts}
+                    extraData={this.state}
                     renderItem={({ item }) => (
-                        <View>
-                        <Text>{item.user.given_name}</Text>
-                            <Text>{item.chit_content}</Text>
-                        </View>
+                        <View style={styles.chittContainer}>
+                            <Text style={styles.nameContainer}>{item.user.given_name}  @{item.user.user_id}:</Text>
+                            <Text style={styles.chitContainer}>{item.chit_content}</Text>
+                        </View >
                         )}
-                    keyExtractor={(item, index) => item.chit_id.toString()}
+                   
+                    keyExtractor={(item, chit_id) => item.chit_id.toString()}
+                    
                 />
                     
-            
-                <Button
-                    title="Logout"
-                    onPress={this.logOut}
-                />
-
+            <TouchableOpacity style={styles.addButon} onPress={() => this.props.navigation.navigate('Chitt')}>
+            <Text style={styles.addButonText}>+</Text>
+            </TouchableOpacity>
+               
               
               
              
@@ -90,9 +107,47 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: '#36485f',
-        paddingLeft: 60,
-        paddingRight: 60,
+        backgroundColor: 'white',
+        paddingLeft: 5,
+        paddingRight: 5,
+        paddingBottom: 10,
+        paddingTop: 10,
+    },
+    chittContainer: {
+        paddingLeft: 3,
+        paddingRight: 3,
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    nameContainer: {
+        paddingLeft: 3,
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    chitContainer: {
+        paddingLeft: 13,
+        paddingRight: 3,
+        fontSize: 15,
+        paddingBottom: 10,
+        borderBottomWidth: 2,
+        borderBottomColor: '#bdeded',
+    },
+    addButon: {
+        position: 'absolute',
+        zIndex: 11,
+        right: 20,
+        bottom: 50,
+        backgroundColor:'#3F65CD',
+        width: 50,
+        height: 50,
+        borderRadius: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 8,
+    },
+    addButonText: {
+        color: '#fff',
+        fontSize: 15,
     }
 });
 export default HomeScreen;

@@ -3,44 +3,69 @@ import { FlatList, Text, View, Button, StyleSheet, TouchableOpacity } from 'reac
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import AsyncStorage from '@react-native-community/async-storage';
-class GetAllChits extends Component {
+class Follower extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isLoading: true,
-            AllTheChitts: [],
+            AllTheFollowers: [],
             user_id: '',
             loggedin:'false',
-            refreshing:false,
+            token:'',
         }
+        this.getAllFollowers = this.getAllFollowers.bind(this);
     }
 
-    handleRefresh =() => {
-        this.setState({
-            refreshing:true,
-        })
-        this.getData();
+    loadUserDetails = async () => {
+        try {
+           
+            const userIDFromLogin = await AsyncStorage.getItem('id', (error, item) => console.log('profileid:' + item));
+            const id = JSON.parse(userIDFromLogin);
+            this.setState({
+                user_id: id
+            })
+        
+            const usertokenFromLogin = await AsyncStorage.getItem('userToken', (error, item) => console.log('profiletoken:' + item));
+            const usertoken = JSON.parse(usertokenFromLogin);
+            this.setState({
+                token: usertoken
+            })
+            console.log('this is the id that we passed here in the Follower screen:    ' + this.state.user_id);
+            this.getAllFollowers();
+            
+        } catch (error) {
+            console.log(error);
+
+        }
     }
-    getData() {
-        return fetch('http://10.0.2.2:3333/api/v0.0.5/chits?start=0&count=100')
-            .then((response) => response.json())
+   
+
+    getAllFollowers = () => {
+
+        return fetch('http://10.0.2.2:3333/api/v0.0.5/user/'+this.state.user_id+'/followers')
+            .then((response) => {
+                if(response.status === 200){
+                    return response.json()
+                }else{
+                    console.log('response.statuse:'+response.status);
+                }
+            })
             .then((responsejson) => {
+               
                 this.setState({
-                    isLoading: false,
-                    AllTheChitts: responsejson, 
+                    
+                    AllTheFollowers: responsejson, 
                 });
-                this.setState({
-                    refresh:false,
-                })
             })
             .catch((error) => {
                 console.log(error);
             });
-        this.getData();
+        
     }
 
     componentDidMount() {
-        this.getData();
+        this.loadUserDetails();
+        this.getAllFollowers();
     }
 
     
@@ -51,23 +76,22 @@ class GetAllChits extends Component {
 
             <View style={styles.container}>
             <FlatList
-            data={this.state.AllTheChitts}
+            data={this.state.AllTheFollowers}
             extraData={this.state}
             renderItem={({ item }) => (
                 <View style={styles.chittContainer}>
-                    <Text style={styles.nameContainer}>{item.user.given_name}  @{item.user.user_id}:</Text>
-                    <Text style={styles.chitContainer}>{item.chit_content}</Text>
+                    <Text style={styles.nameContainer}>{item.given_name}  @{item.user_id}:</Text>
+                    
                 </View >
                 )}
            
-            keyExtractor={(item, chit_id) => item.chit_id.toString()}
-            refreshing = {this.state.refreshing}
-            onRefresh = {this.handleRefresh}
+            keyExtractor={(item, chit_user_id) => item.user_id.toString()}
+            
         />
                
                 <Button
-                    title="Login"
-                    onPress={() => this.props.navigation.navigate('Login')}
+                    title="BACK"
+                    onPress={() => this.props.navigation.navigate('AboutScreen')}
                 />                   
 
             </View>
@@ -125,4 +149,4 @@ const styles = StyleSheet.create({
         fontSize: 15,
     }
 });
-export default GetAllChits;
+export default Follower;

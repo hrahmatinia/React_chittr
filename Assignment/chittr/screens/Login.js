@@ -1,31 +1,31 @@
 import React, { Component } from 'react';
-import { Alert } from 'react-native';
 import {
     Text,
     View,
     TextInput,
     TouchableOpacity,
     StyleSheet,
-    Button
+    Button,
+    Alert
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+
 class Login extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            email: '',
-            password: '',
-            XAuthorization: '',
-            loggedIn: 'false',
             id: '',
-            token:''
-           
-        };
+            token: '',
+            email: '',
+            password: ''
+        }
+        this.Login = this.Login.bind(this);
     }
+   
     // i have to use Async
     Login = () => {
-       
+
         console.log("Email:   " + this.state.email + "    and  pass:  " + this.state.password);
         return fetch("http://10.0.2.2:3333/api/v0.0.5/login",
             {
@@ -33,57 +33,64 @@ class Login extends Component {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
-                    
+
                 },
                 body: JSON.stringify({
                     email: this.state.email,
                     password: this.state.password,
-                   // loggedIn: this.state.loggedIn,
+                   
                 })
+
             })
 
-            .then((Response) => {
-               
-                console.log(Response.status);
-                if (Response.status == 200) {
-                    this.setState({
-                        loggedIn: 'true'
-                    })
-                    console.log("successfull Login");
-                    this.props.navigation.navigate('App');
+            .then((response) => {
+
+                console.log(response.status);
+                if (response.status === 200) {
+                   // this.setState({ token: response.status.toString() });
+                   // console.log("successfull Login" +this.state.token );
+                   
                 }
                 else {
-                    this.setState({
-                        loggedIn: 'false'
-                    })
                     console.log("Email or password is invalid");
                     Alert.alert('Unsuccessful Login', 'Email or Password Is Not Valid');
-                   // this.props.navigation.navigate('Auth');
+                    // this.props.navigation.navigate('Auth');
                 }
-                return Response.json()
-            }) 
+                return response.json();
+            })
             .then((result) => {
                 console.log(result);
-                if (result.token !== null) {
-                    this.setState({ token: result.token });
-                    this.setState({ id: result.id });
-                    this.saveToken();
-                }
-                else {
-                    Alert.alert('Unsuccessful Login', 'Email or Password Is Not Valid');
-                }
+               // let t = result.token;
+               // this.setState({ token: JSON.stringify(this.state.token), id: result.id } );
+               
+                this.setState({ token: result.token }, () => console.log(this.state.token));
+                console.log('After set state in login:' + '    ' + this.state.token);
+                this.setState({ id: result.id }, function () {
+                    console.log(this.state.id);
+                });
+                //let i = result.id;
+                console.log('After set state in login:' + '    ' + this.state.id);
+                this.saveToken();
+                this.props.navigation.navigate('App');
             }).catch((error) => {
-                console.log('There has been a problem with your fetch operation: ' +error);
+                console.log('There has been a problem with your fetch operation: ' + error);
                 throw error;
             });
        
     }
 
+   
     saveToken = async () => {
-        await AsyncStorage.setItem('userToken', JSON.stringify(this.state.token));
-        await AsyncStorage.setItem('id', JSON.stringify(this.state.id));
-    }
+        try {
+            await AsyncStorage.setItem('userToken', JSON.stringify( this.state.token ));
+            await AsyncStorage.setItem('id', JSON.stringify(this.state.id));
+            console.log('this is the login id:' + this.state.token + this.state.id);
+        } catch (error) {
+            console.log(error);
 
+        }
+    }
+    
     render() {
         return (
             <View style={styles.container}>
@@ -94,7 +101,7 @@ class Login extends Component {
                 <TextInput name='password' onChangeText={(text) => this.setState({ password: text })} value={this.state.password.value} style={styles.textinput} placeholderTextColor="white" placeholder='Password'
                     secureTextEntry={true} underlineColorAndroid={'transparent'} />
 
-                <Button title="Login" onPress={this.Login} />
+                <Button title="Login" onPress={this.Login.bind(this)} />
             </View>
         );
     }

@@ -8,16 +8,32 @@ import AsyncStorage from '@react-native-community/async-storage';
 class AuthLoadinScreen extends Component {
 
     constructor() {
-        super()
-        this.loadApp()
+        super();
+        this.loadApp();
+        this.state = {
+            userId: '',
+            token: ''
+        }
+        this.loadApp = this.loadApp.bind(this);
     }
 
-    loadApp = async () => {
-        const userToken = await AsyncStorage.getItem('userToken').then((userToken) => {
-            console.log(userToken)
-            this.props.navigation.navigate(userToken ? 'Auth' : 'App')
-        });
+
+loadApp = async () => {
+    try {
+        const usertokenFromLogin = await AsyncStorage.getItem('userToken', (error, item) => console.log('profiletoken:' + item));
+        const usertoken = JSON.parse(usertokenFromLogin);
+        this.setState({
+            token: usertoken
+        })
+        console.log('this is the token that we passed here in the Authloading screen(if it is null,then user is not logged in):    ' + this.state.token);
+        
+        this.props.navigation.navigate(this.state.token ? 'App' : 'Auth');
+      }catch (error) {
+            console.log(error);
+
+        }
     }
+    
 
     render() {
         return (
