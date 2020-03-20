@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, Text, View, Button, StyleSheet, TouchableOpacity , Alert} from 'react-native';
+import { FlatList, Text, View, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import AsyncStorage from '@react-native-community/async-storage';
@@ -16,7 +16,8 @@ class Following extends Component {
         this.getAllFollowing = this.getAllFollowing.bind(this);
     }
 
-    loadUserDetails = async() => {
+    //retrive user data to be able to use  it
+    loadUserDetails = async () => {
         try {
 
             const userIDFromLogin = await AsyncStorage.getItem('id', (error, item) => console.log('profileid:' + item));
@@ -39,7 +40,7 @@ class Following extends Component {
         }
     }
 
-
+//get all the following in a list
     getAllFollowing = () => {
 
         return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.user_id + '/following')
@@ -68,63 +69,65 @@ class Following extends Component {
         this.getAllFollowing();
     }
 
-    UnFollow = (FollowedUserID) =>{
-return fetch('http://10.0.2.2:3333/api/v0.0.5/user/'+FollowedUserID+'/follow',
 
-{
-    method: 'DELETE',
-    headers: {
-        'Content-Type': 'application/json',
-       'X-Authorization': this.state.token 
+    //unfollow method
+    UnFollow = (FollowedUserID) => {
+        return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + FollowedUserID + '/follow',
+
+            {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Authorization': this.state.token
+                }
+            })
+            .then((response) => {
+
+                if (response.status == 200) {
+                    console.log("User has been Unfollowed");
+                    Alert.alert("User has been Unfollowed");
+
+                }
+                else {
+                    console.log("Something gone wrong.please try later!");
+                    Alert.alert("Something gone wrong.please try later!");
+                }
+
+
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
+
     }
-})
-.then((response) => {
-  
-    if (response.status == 200) {
-        console.log("User has been Unfollowed" );
-        Alert.alert("User has been Unfollowed" );
-
-    }
-    else {
-        console.log("Something gone wrong.please try later!");
-        Alert.alert("Something gone wrong.please try later!" );
-    }
-    
-   
-})
-.catch((error) => {
-    console.error(error);
-});
-
-
-    } 
 
     render() {
 
         return (
 
             <View style={styles.container}>
-            <FlatList
-            data={this.state.AllTheFollowings}
-            extraData={this.state}
-            renderItem={({ item }) => (
-                <View style={styles.chitContainer}>
-                    <Text style={styles.nameContainer}>{item.given_name}  @{item.user_id}:</Text>
-                    <TouchableOpacity style={styles.UnFollowButon} onPress={()=>this.UnFollow(item.user_id)}>
-                    <Text style={styles.addButonText}>UnFollow</Text>
-                    </TouchableOpacity>
-                   
-                </View >
-                )}
-           
-            keyExtractor={(item, chit_user_id) => item.user_id.toString()}
-            
-        />
-               
+                <FlatList
+                    data={this.state.AllTheFollowings}
+                    extraData={this.state}
+                    renderItem={({ item }) => (
+                        <View style={styles.chitContainer}>
+                            <Text style={styles.nameContainer}>{item.given_name}  @{item.user_id}:</Text>
+                            <TouchableOpacity style={styles.UnFollowButon} onPress={() => this.UnFollow(item.user_id)}>
+                                <Text style={styles.addButonText}>UnFollow</Text>
+                            </TouchableOpacity>
+
+                        </View >
+                    )}
+
+                    keyExtractor={(item, chit_user_id) => item.user_id.toString()}
+
+                />
+
                 <Button
                     title="BACK"
                     onPress={() => this.props.navigation.navigate('AboutScreen')}
-                />                   
+                />
 
             </View>
         );
@@ -133,27 +136,28 @@ return fetch('http://10.0.2.2:3333/api/v0.0.5/user/'+FollowedUserID+'/follow',
 
 }
 
+//styleshet
 const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        flexDirection:'column',
+        flexDirection: 'column',
         justifyContent: 'space-between',
         backgroundColor: 'white',
         paddingLeft: 5,
         paddingRight: 5,
         paddingBottom: 10,
         paddingTop: 20,
-        
+
     },
     chittContainer: {
         justifyContent: 'space-between',
-        top:12,
+        top: 12,
         paddingLeft: 3,
         paddingRight: 3,
         fontSize: 20,
         fontWeight: 'bold',
-        flexDirection:'column',
+        flexDirection: 'column',
     },
     nameContainer: {
         paddingLeft: 3,
@@ -165,14 +169,14 @@ const styles = StyleSheet.create({
         paddingRight: 3,
         fontSize: 15,
         paddingBottom: 1,
-       marginTop:20,
-       marginBottom: 10,
+        marginTop: 20,
+        marginBottom: 10,
     },
     UnFollowButon: {
         position: 'absolute',
         zIndex: 11,
         right: 20,
-       
+
         backgroundColor: '#3F65CD',
         width: 80,
         height: 30,

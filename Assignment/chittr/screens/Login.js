@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 class Login extends Component {
 
+    //constructor(all the identifiers are beeing stated here)
     constructor(props) {
         super(props);
         this.state = {
@@ -22,8 +23,8 @@ class Login extends Component {
         }
         this.Login = this.Login.bind(this);
     }
-   
-    // i have to use Async
+
+    // Login method which is responsible to fetch some data from the API and database to check the user detail and log it in
     Login = () => {
 
         console.log("Email:   " + this.state.email + "    and  pass:  " + this.state.password);
@@ -38,7 +39,7 @@ class Login extends Component {
                 body: JSON.stringify({
                     email: this.state.email,
                     password: this.state.password,
-                   
+
                 })
 
             })
@@ -47,9 +48,9 @@ class Login extends Component {
 
                 console.log(response.status);
                 if (response.status === 200) {
-                   // this.setState({ token: response.status.toString() });
-                   // console.log("successfull Login" +this.state.token );
-                   
+                    // this.setState({ token: response.status.toString() });
+                    // console.log("successfull Login" +this.state.token );
+
                 }
                 else {
                     console.log("Email or password is invalid");
@@ -60,9 +61,9 @@ class Login extends Component {
             })
             .then((result) => {
                 console.log(result);
-               // let t = result.token;
-               // this.setState({ token: JSON.stringify(this.state.token), id: result.id } );
-               
+                // let t = result.token;
+                // this.setState({ token: JSON.stringify(this.state.token), id: result.id } );
+
                 this.setState({ token: result.token }, () => console.log(this.state.token));
                 console.log('After set state in login:' + '    ' + this.state.token);
                 this.setState({ id: result.id }, function () {
@@ -76,13 +77,13 @@ class Login extends Component {
                 console.log('There has been a problem with your fetch operation: ' + error);
                 throw error;
             });
-       
+
     }
 
-   
+//this method is an async storage method to basically save id and token of the user to be able to reuse it later for different purposes like post chitts
     saveToken = async () => {
         try {
-            await AsyncStorage.setItem('userToken', JSON.stringify( this.state.token ));
+            await AsyncStorage.setItem('userToken', JSON.stringify(this.state.token));
             await AsyncStorage.setItem('id', JSON.stringify(this.state.id));
             console.log('this is the login id:' + this.state.token + this.state.id);
         } catch (error) {
@@ -90,22 +91,26 @@ class Login extends Component {
 
         }
     }
-    
+//this bit is the bit that we show data to the user with.using of different element like <View>
+//getting values from textinputs and pass the identifiers(variables)then use them in the Login method
     render() {
         return (
-            <View style={styles.container}>
-                <Text style={styles.header}>Login</Text>
+            <View style= { styles.container } >
+            <Text style={ styles.header }> Login < /Text>
 
-                <TextInput name='email' onChangeText={(text) => this.setState({ email: text })} value={this.state.email.value} style={styles.textinput} placeholderTextColor="white" placeholder='EMail'
-                    underlineColorAndroid={'transparent'} />
-                <TextInput name='password' onChangeText={(text) => this.setState({ password: text })} value={this.state.password.value} style={styles.textinput} placeholderTextColor="white" placeholder='Password'
-                    secureTextEntry={true} underlineColorAndroid={'transparent'} />
+                < TextInput name = 'email' onChangeText = {(text) => this.setState({ email: text })
+    } value = { this.state.email.value } style = { styles.textinput } placeholderTextColor = "white" placeholder = 'EMail'
+    underlineColorAndroid = { 'transparent'} />
+        <TextInput name='password' onChangeText = {(text) => this.setState({ password: text })} value = { this.state.password.value } style = { styles.textinput } placeholderTextColor = "white" placeholder = 'Password'
+secureTextEntry = { true} underlineColorAndroid = { 'transparent'} />
 
-                <Button title="Login" onPress={this.Login.bind(this)} />
-            </View>
+    <Button title="Login" onPress = { this.Login.bind(this) } />
+        </View>
         );
     }
 }
+
+//style sheet
 const styles = StyleSheet.create({
 
     container: {

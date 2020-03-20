@@ -10,14 +10,14 @@ class GetAllChits extends Component {
             isLoading: true,
             AllTheChitts: [],
             user_id: '',
-            loggedin:'false',
-            refreshing:false,
+            loggedin: 'false',
+            refreshing: false,
         }
     }
 
-    handleRefresh =() => {
+    handleRefresh = () => {
         this.setState({
-            refreshing:true,
+            refreshing: true,
         })
         this.getData();
     }
@@ -27,10 +27,10 @@ class GetAllChits extends Component {
             .then((responsejson) => {
                 this.setState({
                     isLoading: false,
-                    AllTheChitts: responsejson, 
+                    AllTheChitts: responsejson,
                 });
                 this.setState({
-                    refresh:false,
+                    refresh: false,
                 })
             })
             .catch((error) => {
@@ -43,34 +43,36 @@ class GetAllChits extends Component {
         this.getData();
     }
 
-    
-   
+
+
     render() {
 
         return (
 
-            <View style={styles.container}>
+            <View style= { styles.container } >
             <FlatList
-            data={this.state.AllTheChitts}
-            extraData={this.state}
-            renderItem={({ item }) => (
-                <View style={styles.chittContainer}>
-                    <Text style={styles.nameContainer}>{item.user.given_name}  @{item.user.user_id}:</Text>
-                    <Text style={styles.chitContainer}>{item.chit_content}</Text>
-                </View >
-                )}
-           
-            keyExtractor={(item, chit_id) => item.chit_id.toString()}
-            refreshing = {this.state.refreshing}
-            onRefresh = {this.handleRefresh}
-        />
-               
-                <Button
-                    title="Login"
-                    onPress={() => this.props.navigation.navigate('Login')}
-                />                   
+            data={ this.state.AllTheChitts }
+        extraData = { this.state }
+        renderItem = {({ item }) => (
+            <View style= { styles.chittContainer } >
+            <Text style={ styles.nameContainer }> { item.user.given_name }  @{ item.user.user_id }: </Text>
+                < Text style = { styles.chitContainer } > { item.chit_content } < /Text>
+                    < /View >
+                )
+    }
 
-            </View>
+    keyExtractor = {(item, chit_id) => item.chit_id.toString()
+}
+refreshing = { this.state.refreshing }
+onRefresh = { this.handleRefresh }
+    />
+
+    <Button
+                    title="Login"
+onPress = {() => this.props.navigation.navigate('Login')}
+/>                   
+
+    < /View>
         );
     }
 
@@ -112,7 +114,7 @@ const styles = StyleSheet.create({
         zIndex: 11,
         right: 20,
         bottom: 50,
-        backgroundColor:'#3F65CD',
+        backgroundColor: '#3F65CD',
         width: 50,
         height: 50,
         borderRadius: 50,

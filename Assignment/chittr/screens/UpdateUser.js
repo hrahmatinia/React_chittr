@@ -18,8 +18,8 @@ class UpdateUser extends Component {
             family_name: '',
             email: '',
             password: '',
-            token:'',
-            userId:''
+            token: '',
+            userId: ''
         };
     }
 
@@ -53,7 +53,7 @@ class UpdateUser extends Component {
             this.setState({
                 email: Email
             })
-       
+
         } catch (error) {
             console.log(error);
 
@@ -62,13 +62,13 @@ class UpdateUser extends Component {
 
     Update = () => {
         //console.log(this.state.id);
-        return fetch("http://10.0.2.2:3333/api/v0.0.5/user/"+this.state.userId,
+        return fetch("http://10.0.2.2:3333/api/v0.0.5/user/" + this.state.userId,
             {
                 method: 'PATCH',
-                headers: {                   
-        'Accept': 'application/json',                  
-        'Content-Type': 'application/json',
-        'X-Authorization': this.state.token
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-Authorization': this.state.token
                 },
                 body: JSON.stringify({
                     given_name: this.state.given_name,
@@ -81,38 +81,39 @@ class UpdateUser extends Component {
                 Alert.alert("Item Added!" + this.state.given_name + this.state.family_name + this.state.email + this.state.password);
                 console.log(response.status);
                 if (response.status == 201) {
-                    console.log("Updated Successfully" + "      "+ this.state.given_name + "      " + this.state.family_name + "      " + this.state.email + "      " + this.state.password);
+                    console.log("Updated Successfully" + "      " + this.state.given_name + "      " + this.state.family_name + "      " + this.state.email + "      " + this.state.password);
                     this.props.navigation.navigate('ProfileScreen');
                 }
-              
-               
+
+
             })
             .catch((error) => {
                 console.error(error);
             });
     }
 
-    
+
     componentDidMount() {
-       this.GetUserDetails();
+        this.GetUserDetails();
     }
 
     render() {
         return (
-            <View style={styles.container}>
-                <Text style={styles.header}>Update</Text>
-               
-                <TextInput  name='given_name' onChangeText={(text) => this.setState({ given_name: text })} value={this.state.given_name} style={styles.textinput} placeholderTextColor="white" placeholder='Your Name'
-                    underlineColorAndroid={'transparent'} />
-                <TextInput name='family_name' onChangeText={(text) => this.setState({ family_name: text })} value={this.state.family_name} style={styles.textinput} placeholderTextColor="white" placeholder='Surename'
-                    underlineColorAndroid={'transparent'} />
-                <TextInput name='email' onChangeText={(text) => this.setState({ email: text })} value={this.state.email} style={styles.textinput} placeholderTextColor="white" placeholder='EMail'
-                    underlineColorAndroid={'transparent'} />
-                <TextInput name='password' onChangeText={(text) => this.setState({ password: text })} value={this.state.password} style={styles.textinput} placeholderTextColor="white" placeholder='Password'
-                    secureTextEntry={true} underlineColorAndroid={'transparent'} />
-                <Button title="Update" onPress={this.Update} />
-                <Button title="Cancel" onPress={() => this.props.navigation.navigate('ProfileScreen')} />
-            </View>
+            <View style= { styles.container } >
+            <Text style={ styles.header }> Update < /Text>
+
+                < TextInput  name = 'given_name' onChangeText = {(text) => this.setState({ given_name: text })
+    } value = { this.state.given_name } style = { styles.textinput } placeholderTextColor = "white" placeholder = 'Your Name'
+    underlineColorAndroid = { 'transparent'} />
+        <TextInput name='family_name' onChangeText = {(text) => this.setState({ family_name: text })} value = { this.state.family_name } style = { styles.textinput } placeholderTextColor = "white" placeholder = 'Surename'
+underlineColorAndroid = { 'transparent'} />
+    <TextInput name='email' onChangeText = {(text) => this.setState({ email: text })} value = { this.state.email } style = { styles.textinput } placeholderTextColor = "white" placeholder = 'EMail'
+underlineColorAndroid = { 'transparent'} />
+    <TextInput name='password' onChangeText = {(text) => this.setState({ password: text })} value = { this.state.password } style = { styles.textinput } placeholderTextColor = "white" placeholder = 'Password'
+secureTextEntry = { true} underlineColorAndroid = { 'transparent'} />
+    <Button title="Update" onPress = { this.Update } />
+        <Button title="Cancel" onPress = {() => this.props.navigation.navigate('ProfileScreen')} />
+            < /View>
         );
     }
 }

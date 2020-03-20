@@ -26,9 +26,9 @@ class SignUp extends Component {
         return fetch("http://10.0.2.2:3333/api/v0.0.5/user",
             {
                 method: 'POST',
-                headers: {                   
-        'Accept': 'application/json',                  
-        'Content-Type': 'application/json'
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
 
                 },
                 body: JSON.stringify({
@@ -46,7 +46,7 @@ class SignUp extends Component {
                     this.props.navigation.navigate('Auth');
                 }
                 return response.json()
-               
+
             })
             .catch((error) => {
                 console.error(error);
@@ -57,7 +57,7 @@ class SignUp extends Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.header}>Register</Text>
-               
+
                 <TextInput name='given_name' onChangeText={(text) => this.setState({ given_name: text })} value={this.state.given_name.value} style={styles.textinput} placeholderTextColor="white" placeholder='Yourname'
                     underlineColorAndroid={'transparent'} />
                 <TextInput name='family_name' onChangeText={(text) => this.setState({ family_name: text })} value={this.state.family_name.value} style={styles.textinput} placeholderTextColor="white" placeholder='Surename'

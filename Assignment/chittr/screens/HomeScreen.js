@@ -4,17 +4,17 @@ import AsyncStorage from '@react-native-community/async-storage';
 class HomeScreen extends Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
             isLoading: true,
             AllTheChitts: [],
             user_id: '',
-            loggedin:'false',
-            UserId:'',
-            token:''
+            loggedin: 'false',
+            UserId: '',
+            token: ''
         }
         this.getData = this.getData.bind(this);
-        
+
     }
 
     GetUserDetails = async () => {
@@ -40,62 +40,88 @@ class HomeScreen extends Component {
 
     getData() {
         return fetch('http://10.0.2.2:3333/api/v0.0.5/chits?start=0&count=100',
-          {
-                
-                headers: { 
+            {
+
+                headers: {
                     'Content-Type': 'application/json',
                     'X-Authorization': this.state.token
                 }
-                })
+            })
             .then((response) => response.json())
             .then((responsejson) => {
                 this.setState({
                     isLoading: false,
-                    AllTheChitts: responsejson, 
+                    AllTheChitts: responsejson,
                 });
             })
             .catch((error) => {
                 console.log(error);
             });
-      
+
     }
 
+    getChitImage(chitID){
+        return fetch('http://10.0.2.2:3333/api/v0.0.5/chits/'+chitID +'photo',
+            {
+                method:'GET',
+                // headers: {
+                //     'Content-Type': 'application/json',
+                //     'X-Authorization': this.state.token
+                // }
+            })
+            .then((response) => {
+                if(response.status === 200){
+                    console.log(response)
+                    return true;
+                }else if(response.status === 404){
+                    console.log("image not found")
+                  return false;
+                }
+              
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
+    }
     componentDidMount() {
         this.GetUserDetails();
         this.getData();
     }
 
-  
 
-  
+
+
     render() {
 
         return (
 
-            <View style={styles.container}>
-                
-                <FlatList
-                    data={this.state.AllTheChitts}
-                    extraData={this.state}
-                    renderItem={({ item }) => (
-                        <View style={styles.chittContainer}>
-                            <Text style={styles.nameContainer}>{item.user.given_name}  @{item.user.user_id}:</Text>
-                            <Text style={styles.chitContainer}>{item.chit_content}</Text>
-                        </View >
-                        )}
-                   
-                    keyExtractor={(item, chit_id) => item.chit_id.toString()}
-                    
-                />
-                    
-            <TouchableOpacity style={styles.addButon} onPress={() => this.props.navigation.navigate('Chitt')}>
-            <Text style={styles.addButonText}>+</Text>
-            </TouchableOpacity>
-               
-              
-              
-             
-            </View>
+            <View style= { styles.container } >
+
+            <FlatList
+                    data={ this.state.AllTheChitts }
+        extraData = { this.state }
+        renderItem = {({ item }) => (
+            <View style= { styles.chittContainer } >
+            <Text style={ styles.nameContainer }> { item.user.given_name }  @{ item.user.user_id }: </Text>
+                < Text style = { styles.chitContainer } > { item.chit_content } < /Text>
+                    < /View >
+                        )
+    }
+
+    keyExtractor = {(item, chit_id) => item.chit_id.toString()
+}
+
+/>
+
+    < TouchableOpacity style = { styles.addButon } onPress = {() => this.props.navigation.navigate('Chitt')}>
+        <Text style={ styles.addButonText }> +</Text>
+            < /TouchableOpacity>
+
+
+
+
+            < /View>
         );
     }
 
@@ -137,7 +163,7 @@ const styles = StyleSheet.create({
         zIndex: 11,
         right: 20,
         bottom: 50,
-        backgroundColor:'#3F65CD',
+        backgroundColor: '#3F65CD',
         width: 50,
         height: 50,
         borderRadius: 50,

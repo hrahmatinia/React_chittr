@@ -1,3 +1,5 @@
+
+//this screen has only two buttons to navigate to followers and following pages
 import React, { Component } from 'react';
 import { Text, View, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
@@ -10,35 +12,35 @@ class AboutScreen extends Component {
     render() {
         return (
             <View>
-                <Text>Followrs Screen</Text>
+            <Text>Followrs Screen < /Text>
 
-                <TouchableOpacity style={styles.followersButon}  onPress={() => this.props.navigation.navigate('Following')}>
-                <Text style={styles.addButonText}>Following</Text>
-                </TouchableOpacity>
+            < TouchableOpacity style = { styles.followersButon }  onPress = {() => this.props.navigation.navigate('Following')}>
+            <Text style={ styles.addButonText }> Following < /Text>
+            < /TouchableOpacity>
 
-                <TouchableOpacity style={styles.followingButon}  onPress={() => this.props.navigation.navigate('Followers')}>
-                <Text style={styles.addButonText}>Followers</Text>
-                </TouchableOpacity>
-            </View>
+            < TouchableOpacity style = { styles.followingButon }  onPress = {() => this.props.navigation.navigate('Followers')}>
+                <Text style={ styles.addButonText }> Followers < /Text>
+                    < /TouchableOpacity>
+                    < /View>
         );
     }
 
 }
 const AppContainer = createAppContainer(createStackNavigator({
-    Followers:{
-        screen:Followers,
-        navigationOptions:{
-            headerShown:false,
+    Followers: {
+        screen: Followers,
+        navigationOptions: {
+            headerShown: false,
         }
     },
-    Following:{
-        screen:Following,
-        navigationOptions:{
-            headerShown:false,
+    Following: {
+        screen: Following,
+        navigationOptions: {
+            headerShown: false,
         }
     },
     AboutScreen: AboutScreen,
-   
+
 }
     , {
         initialRouteName: 'AboutScreen',
@@ -89,10 +91,10 @@ const styles = StyleSheet.create({
     followersButon: {
         position: 'absolute',
         zIndex: 11,
-        top:20,
+        top: 20,
         right: 20,
         bottom: 50,
-        backgroundColor:'#3F65CD',
+        backgroundColor: '#3F65CD',
         width: 60,
         height: 30,
         borderRadius: 2,
@@ -103,10 +105,10 @@ const styles = StyleSheet.create({
     followingButon: {
         position: 'absolute',
         zIndex: 11,
-        top:20,
+        top: 20,
         left: 20,
         bottom: 50,
-        backgroundColor:'#3F65CD',
+        backgroundColor: '#3F65CD',
         width: 60,
         height: 30,
         borderRadius: 2,

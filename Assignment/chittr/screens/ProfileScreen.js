@@ -19,12 +19,13 @@ class ProfileScreen extends Component {
             loggedin: 'false',
             userId: '',
             chit_id: '',
-            token:'',
-            timestamp:''
+            token: '',
+            timestamp: ''
         }
         this.getUserData = this.getUserData.bind(this);
     }
 
+    //retrive user data with async storage
     loadUserDetails = async () => {
         try {
             const Time = await AsyncStorage.getItem('timeStamp', (error, item) => console.log('timestamp:' + item));
@@ -37,7 +38,7 @@ class ProfileScreen extends Component {
             this.setState({
                 userId: id
             })
-        
+
             const usertokenFromLogin = await AsyncStorage.getItem('userToken', (error, item) => console.log('profiletoken:' + item));
             const usertoken = JSON.parse(usertokenFromLogin);
             this.setState({
@@ -45,20 +46,20 @@ class ProfileScreen extends Component {
             })
             console.log('this is the id that we passed here in the profile screen:    ' + this.state.token);
             this.getUserData();
-            
+
         } catch (error) {
             console.log(error);
 
         }
     }
-   
 
+//get user data(profile material)
     getUserData() {
         console.log('userid:    ' + this.state.userId);
         return fetch("http://10.0.2.2:3333/api/v0.0.5/user/" + this.state.userId,
             {
                 method: 'GET',
-              
+
             })
             .then((response) => response.json())
             .then((responsejson) => {
@@ -68,16 +69,16 @@ class ProfileScreen extends Component {
                     given_name: responsejson.given_name,
                     family_name: responsejson.family_name,
                     email: responsejson.email,
-                   // timestamp:responsejson.timestamp,
+                    // timestamp:responsejson.timestamp,
                 });
                 this.saveUserData();
             })
             .catch((error) => {
                 console.log(error);
             });
-        
-    }
 
+    }
+//saving user details in async storage
     saveUserData = async () => {
         try {
             await AsyncStorage.setItem('userGivenName', JSON.stringify(this.state.given_name));
@@ -95,7 +96,7 @@ class ProfileScreen extends Component {
         this.saveUserData();
     }
 
-   
+
     logOut = async () => {
         AsyncStorage.clear();
         this.props.navigation.navigate("Auth");
@@ -106,51 +107,46 @@ class ProfileScreen extends Component {
 
         return (
 
-            <View style={styles.container}>
-              <View style={styles.profileContainer}> 
-                <Text style={styles.idContainer}> USer ID: {this.state.userId}</Text>
-                <Text style={styles.nameContainer}>Given Name: {this.state.given_name}</Text>
-                <Text style={styles.familyContainer}>Family Name: {this.state.family_name}</Text>
-                <Text style={styles.emailContainer}>EMail: {this.state.email}</Text>
+            <View style= { styles.container } >
+            <View style={ styles.profileContainer }>
+                <Text style={ styles.idContainer }> USer ID: { this.state.userId } </Text>
+                    < Text style = { styles.nameContainer } > Given Name: { this.state.given_name } </Text>
+                        < Text style = { styles.familyContainer } > Family Name: { this.state.family_name } </Text>
+                            < Text style = { styles.emailContainer } > EMail: { this.state.email } </Text>
+                                < /View>
+                                < FlatList
+                                 data = { this.state.recent_chits }
+                                  renderItem = {({ item }) => (
+                               <View style= { styles.chittContainer } >
+                               <Text style={ styles.chitContainer }> { item.chit_content } < /Text>
+                               < Text style = { styles.idContainer } > Chit_ID: { item.chit_id } </Text>
+                              < Text style = { styles.timeContainer } > Time: { this.state.timestamp } </Text>
+
+                        < /View>
+                    )
+    }
+                      keyExtractor = {(item, index) => item.chit_id.toString()}/>
+
+    < TouchableOpacity style = { styles.addButon }  onPress = {() => this.props.navigation.navigate('UpdateUser')}>
+        <Text style={ styles.addButonText }> Update < /Text>
+            < /TouchableOpacity>
+            < Button title = "Logout" onPress = { this.logOut } />
+
                 </View>
-                <FlatList
-                    data={this.state.recent_chits}
-                    renderItem={({ item }) => (
-                        <View style={styles.chittContainer}>
-                            <Text style={styles.chitContainer}>{item.chit_content}</Text>
-                            <Text style={styles.idContainer}> Chit_ID: {item.chit_id}</Text>
-                            <Text style={styles.timeContainer}> Time: {this.state.timestamp}</Text>
-                            
-                        </View>
-                    )}
-                    keyExtractor={(item, index) => item.chit_id.toString()}
-                />
-
-                <TouchableOpacity style={styles.addButon}  onPress={() => this.props.navigation.navigate('UpdateUser')}>
-                <Text style={styles.addButonText}>Update</Text>
-                </TouchableOpacity>
-                <Button
-                    title="Logout"
-                    onPress={this.logOut}
-                />
-
-
-
-
-            </View>
         );
     }
 
 
 }
 
+
+//stylesheet
 const styles = StyleSheet.create({
 
     container: {
         flex: 1,
         justifyContent: 'center',
         backgroundColor: 'white',
-        paddingLeft: 5,
         paddingRight: 5,
         paddingBottom: 10,
         paddingTop: 10,
@@ -161,11 +157,11 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
     },
-    profileContainer:{
-alignItems:'center',
-borderBottomWidth: 2,
-borderBottomColor: '#bdeded',
-marginBottom: 20,
+    profileContainer: {
+        alignItems: 'center',
+        borderBottomWidth: 2,
+        borderBottomColor: '#bdeded',
+        marginBottom: 20,
     },
     nameContainer: {
         paddingLeft: 3,
@@ -195,7 +191,7 @@ marginBottom: 20,
         zIndex: 11,
         right: 20,
         bottom: 50,
-        backgroundColor:'#3F65CD',
+        backgroundColor: '#3F65CD',
         width: 50,
         height: 50,
         borderRadius: 50,
@@ -210,14 +206,14 @@ marginBottom: 20,
 });
 
 const AppContainer = createAppContainer(createStackNavigator({
-    UpdateUser:{
-        screen:UpdateUser,
-        navigationOptions:{
-            headerShown:false,
+    UpdateUser: {
+        screen: UpdateUser,
+        navigationOptions: {
+            headerShown: false,
         }
     },
     ProfileScreen: ProfileScreen,
-   
+
 }
     , {
         initialRouteName: 'ProfileScreen',

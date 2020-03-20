@@ -10,21 +10,22 @@ class Follower extends Component {
             isLoading: true,
             AllTheFollowers: [],
             user_id: '',
-            loggedin:'false',
-            token:'',
+            loggedin: 'false',
+            token: '',
         }
         this.getAllFollowers = this.getAllFollowers.bind(this);
     }
 
+    //load and retrive user  details(async)
     loadUserDetails = async () => {
         try {
-           
+
             const userIDFromLogin = await AsyncStorage.getItem('id', (error, item) => console.log('profileid:' + item));
             const id = JSON.parse(userIDFromLogin);
             this.setState({
                 user_id: id
             })
-        
+
             const usertokenFromLogin = await AsyncStorage.getItem('userToken', (error, item) => console.log('profiletoken:' + item));
             const usertoken = JSON.parse(usertokenFromLogin);
             this.setState({
@@ -32,35 +33,35 @@ class Follower extends Component {
             })
             console.log('this is the id that we passed here in the Follower screen:    ' + this.state.user_id);
             this.getAllFollowers();
-            
+
         } catch (error) {
             console.log(error);
 
         }
     }
-   
 
+//get all the followers
     getAllFollowers = () => {
 
-        return fetch('http://10.0.2.2:3333/api/v0.0.5/user/'+this.state.user_id+'/followers')
+        return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.user_id + '/followers')
             .then((response) => {
-                if(response.status === 200){
+                if (response.status === 200) {
                     return response.json()
-                }else{
-                    console.log('response.statuse:'+response.status);
+                } else {
+                    console.log('response.statuse:' + response.status);
                 }
             })
             .then((responsejson) => {
-               
+
                 this.setState({
-                    
-                    AllTheFollowers: responsejson, 
+
+                    AllTheFollowers: responsejson,
                 });
             })
             .catch((error) => {
                 console.log(error);
             });
-        
+
     }
 
     componentDidMount() {
@@ -68,31 +69,31 @@ class Follower extends Component {
         this.getAllFollowers();
     }
 
-    
-   
+
+
     render() {
 
         return (
 
             <View style={styles.container}>
-            <FlatList
-            data={this.state.AllTheFollowers}
-            extraData={this.state}
-            renderItem={({ item }) => (
-                <View style={styles.chittContainer}>
-                    <Text style={styles.nameContainer}>{item.given_name}  @{item.user_id}:</Text>
-                    
-                </View >
-                )}
-           
-            keyExtractor={(item, chit_user_id) => item.user_id.toString()}
-            
-        />
-               
+                <FlatList
+                    data={this.state.AllTheFollowers}
+                    extraData={this.state}
+                    renderItem={({ item }) => (
+                        <View style={styles.chittContainer}>
+                            <Text style={styles.nameContainer}>{item.given_name}  @{item.user_id}:</Text>
+
+                        </View >
+                    )}
+
+                    keyExtractor={(item, chit_user_id) => item.user_id.toString()}
+
+                />
+
                 <Button
                     title="BACK"
                     onPress={() => this.props.navigation.navigate('AboutScreen')}
-                />                   
+                />
 
             </View>
         );
@@ -101,6 +102,7 @@ class Follower extends Component {
 
 }
 
+//style
 const styles = StyleSheet.create({
 
     container: {
@@ -136,7 +138,7 @@ const styles = StyleSheet.create({
         zIndex: 11,
         right: 20,
         bottom: 50,
-        backgroundColor:'#3F65CD',
+        backgroundColor: '#3F65CD',
         width: 50,
         height: 50,
         borderRadius: 50,
